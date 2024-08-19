@@ -11,8 +11,22 @@ import java.util.Comparator;
  * @author jphn
  */
 public class ComparadorProcesso implements Comparator<Processo> {
+
+    public enum Tipo {
+        SJF,
+        PS
+    }
+
+    private Tipo tipo;
+
+    public ComparadorProcesso(Tipo tipo) {
+        this.tipo = tipo;
+    }
+
     @Override
     public int compare(Processo a, Processo b) {
-        return a.tempo - b.tempo;
+        return this.tipo == Tipo.SJF
+                ? a.tempo - b.tempo
+                : a.prioridade.getValue() - b.prioridade.getValue();
     }
 }

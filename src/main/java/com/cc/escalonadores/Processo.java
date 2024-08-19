@@ -4,16 +4,40 @@
  */
 package com.cc.escalonadores;
 
+import java.util.Random;
+
 /**
  *
  * @author jphn
  */
 public class Processo {
 
-    public int id, tempo;
+    public enum Prioridade {
+        HIGH(3),
+        MED(2),
+        LOW(1);
 
-    public Processo(int id, int tempo) {
+        private int value;
+
+        Prioridade(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return this.value;
+        }
+
+        public static Prioridade random() {
+            return Prioridade.values()[new Random().nextInt(0, 2)];
+        }
+    }
+
+    public int id, tempo;
+    public Prioridade prioridade;
+
+    public Processo(int id, int tempo, Prioridade prioridade) {
         this.id = id;
         this.tempo = tempo;
+        this.prioridade = prioridade;
     }
 }

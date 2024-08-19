@@ -4,15 +4,30 @@
  */
 package com.cc.escalonadores.estrategias;
 
+import com.cc.escalonadores.ComparadorProcesso;
 import com.cc.escalonadores.Processo;
+import java.util.Collections;
 import java.util.List;
 
 /**
  *
  * @author jphn
  */
-public class PS extends Estrategia{
+public class PS extends Estrategia {
+
     public PS(List<Processo> fila) {
         super(fila, "PS");
+    }
+
+    public void sort() {
+        Collections.sort(this.fila, new ComparadorProcesso(ComparadorProcesso.Tipo.PS));
+
+        this.fila = this.fila.reversed();
+    }
+
+    public void run() {
+        this.sort();
+
+        super.run();
     }
 }

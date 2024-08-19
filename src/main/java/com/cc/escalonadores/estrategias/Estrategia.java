@@ -4,9 +4,7 @@
  */
 package com.cc.escalonadores.estrategias;
 
-import com.cc.escalonadores.ComparadorProcesso;
 import com.cc.escalonadores.Processo;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,7 +36,12 @@ public abstract class Estrategia {
         while (!fila.isEmpty()) {
             Processo processo = fila.removeFirst();
 
-            System.out.printf("PROCESSO %02d | %02ds \n", processo.id, processo.tempo);
+            System.out.printf(
+                    "PROCESSO %02d | T%02ds | P%02d \n",
+                    processo.id,
+                    processo.tempo,
+                    processo.prioridade.getValue()
+            );
 
             try {
                 Thread.sleep(processo.tempo * 1000); // Simulando tempo de execução
