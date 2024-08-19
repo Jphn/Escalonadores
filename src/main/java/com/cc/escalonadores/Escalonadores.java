@@ -22,8 +22,17 @@ public class Escalonadores {
             fila.add(new Processo(i, random.nextInt(1, 5), Processo.Prioridade.random()));
         }
 
-        new FIFO(fila).run();
-        new SJF(fila).run();
-        new PS(fila).run();
+        new FIFO(fila)
+                .run()
+                .displayHistorico();
+        new SJF(fila)
+                .run()
+                .displayHistorico();
+        new PS(fila)
+                .run()
+                .displayHistorico();
+        new RR(fila, 2)
+                .run()
+                .displayHistorico();
     }
 }

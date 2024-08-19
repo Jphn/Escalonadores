@@ -26,7 +26,7 @@ public class ComparadorProcesso implements Comparator<Processo> {
     @Override
     public int compare(Processo a, Processo b) {
         return this.tipo == Tipo.SJF
-                ? a.tempo - b.tempo
-                : a.prioridade.getValue() - b.prioridade.getValue();
+                ? a.getTempo() - b.getTempo()
+                : a.getPrioridade().getValue() - b.getPrioridade().getValue();
     }
 }

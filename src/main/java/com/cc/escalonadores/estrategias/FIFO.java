@@ -5,17 +5,22 @@
 package com.cc.escalonadores.estrategias;
 
 import com.cc.escalonadores.Processo;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 /**
  *
  * @author jphn
  */
-public class FIFO extends Estrategia{
+public class FIFO extends Estrategia {
 
     public FIFO(List<Processo> fila) {
         super(fila, "FIFO");
+    }
+
+    @Override
+    public FIFO run() {
+        super.run();
+
+        return this;
     }
 }

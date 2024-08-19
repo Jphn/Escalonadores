@@ -14,42 +14,72 @@ import java.util.List;
  */
 public abstract class Estrategia {
 
-    protected List<Processo> fila;
-    private String nome;
+    protected List<Processo> fila, historico;
+    protected String nome;
 
     public Estrategia(List<Processo> fila, String nome) {
         this.fila = new LinkedList(fila);
+        this.fila.forEach((p) -> p.setTempoChegada());
 
+        this.historico = new LinkedList<>();
         this.nome = nome;
-
     }
 
-    protected void display() {
+    protected void displayFila() {
         for (Processo p : this.fila) {
-            System.out.println(p.id + " | " + p.tempo);
+            System.out.printf(
+                    "%02d | %02d",
+                    p.getId(),
+                    p.getTempo()
+            );
         }
     }
 
-    public void run() {
+    public void displayHistorico() {
+        System.out.println("ID | SE | | TE | TR");
+
+        for (Processo p : this.historico) {
+            System.out.printf(
+                    "%02d | %02d | | %02d | %02d\n",
+                    p.getId(),
+                    p.getTempo(),
+                    p.getTempoExecucao().getSeconds(),
+                    p.getTurnaround().getSeconds()
+            );
+        }
+    }
+
+    public Estrategia run() {
         System.out.println("[" + this.nome + " START]\n");
 
-        while (!fila.isEmpty()) {
-            Processo processo = fila.removeFirst();
+        System.out.println("ID | SE | PR");
 
-            System.out.printf(
-                    "PROCESSO %02d | T%02ds | P%02d \n",
-                    processo.id,
-                    processo.tempo,
-                    processo.prioridade.getValue()
-            );
+        while (!fila.isEmpty()) {
+            Processo processo = this.fila.removeFirst();
+
+            processo.setTempoInicio();
 
             try {
-                Thread.sleep(processo.tempo * 1000); // Simulando tempo de execução
+                Thread.sleep(processo.getTempo() * 1000); // Simulando tempo de execução
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
+            processo.setTempoTermino();
+
+            this.historico.add(processo);
+
+            System.out.printf(
+                    "%02d | %02d | %02d\n",
+                    processo.getId(),
+                    processo.getTempo(),
+                    processo.getPrioridade().getValue()
+            );
         }
 
         System.out.println("\n[" + this.nome + " END]");
+
+        return this;
     }
+
 }
