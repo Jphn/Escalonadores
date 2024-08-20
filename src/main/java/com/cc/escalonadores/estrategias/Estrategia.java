@@ -36,17 +36,39 @@ public abstract class Estrategia {
     }
 
     public void displayHistorico() {
-        System.out.println("ID | SE | | TE | TR");
+        double mediaExecucao = 0, mediaEspera = 0, mediaTurnaround = 0;
+
+        System.out.println("ID | SE ||| TX | TS | TR");
 
         for (Processo p : this.historico) {
             System.out.printf(
-                    "%02d | %02d | | %02d | %02d\n",
+                    "%02d | %02d ||| %02d | %02d | %02d\n",
                     p.getId(),
                     p.getTempo(),
                     p.getTempoExecucao().getSeconds(),
+                    p.getTempoEspera().getSeconds(),
                     p.getTurnaround().getSeconds()
             );
+
+            mediaEspera += p.getTempoEspera().getSeconds();
+            mediaExecucao += p.getTempoExecucao().getSeconds();
+            mediaTurnaround += p.getTurnaround().getSeconds();
         }
+
+        mediaExecucao /= this.historico.size();
+        mediaEspera /= this.historico.size();
+        mediaTurnaround /= this.historico.size();
+
+        System.out.printf(
+                "\n[MÉDIAS %s]\n"
+                + "TEX | TES | TUR\n"
+                + "%.1f | %.1f | %.1f\n\n",
+                this.nome,
+                mediaExecucao,
+                mediaEspera,
+                mediaTurnaround
+        );
+
     }
 
     public Estrategia run() {
@@ -77,7 +99,7 @@ public abstract class Estrategia {
             );
         }
 
-        System.out.println("\n[" + this.nome + " END]");
+        System.out.println("\n[" + this.nome + " END]\n");
 
         return this;
     }
