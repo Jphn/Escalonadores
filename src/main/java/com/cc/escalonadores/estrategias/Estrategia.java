@@ -71,7 +71,7 @@ public abstract class Estrategia {
 
     }
 
-    public Estrategia run() {
+    public Estrategia run(boolean cpu) {
         System.out.println("[" + this.nome + " START]\n");
 
         System.out.println("ID | SE | PR");
@@ -81,10 +81,19 @@ public abstract class Estrategia {
 
             processo.setTempoInicio();
 
-            try {
-                Thread.sleep(processo.getTempo() * 1000); // Simulando tempo de execução
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (cpu) {
+                long fim = System.currentTimeMillis() + (processo.getTempo() * 1000);
+
+                while (System.currentTimeMillis() < fim) {
+                    Math.sqrt(Math.random());
+                }
+            } else {
+                try {
+                    Thread.sleep(processo.getTempo() * 1000);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
             processo.setTempoTermino();
@@ -99,7 +108,8 @@ public abstract class Estrategia {
             );
         }
 
-        System.out.println("\n[" + this.nome + " END]\n");
+        System.out.println(
+                "\n[" + this.nome + " END]\n");
 
         return this;
     }

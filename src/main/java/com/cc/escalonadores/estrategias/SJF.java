@@ -23,10 +23,10 @@ public class SJF extends Estrategia {
         Collections.sort(this.fila, new ComparadorProcesso(ComparadorProcesso.Tipo.SJF));
     }
 
-    public SJF run() {
+    public SJF run(boolean cpu) {
         this.sort();
 
-        super.run();
+        super.run(cpu);
 
         return this;
     }

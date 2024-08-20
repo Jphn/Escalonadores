@@ -18,8 +18,8 @@ public class FIFO extends Estrategia {
     }
 
     @Override
-    public FIFO run() {
-        super.run();
+    public FIFO run(boolean cpu) {
+        super.run(cpu);
 
         return this;
     }
