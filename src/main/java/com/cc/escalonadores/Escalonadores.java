@@ -23,16 +23,16 @@ public class Escalonadores {
         }
 
         new FIFO(fila)
-                .run()
+                .run(true)
                 .displayHistorico();
         new SJF(fila)
-                .run()
+                .run(true)
                 .displayHistorico();
         new PS(fila)
-                .run()
+                .run(true)
                 .displayHistorico();
         new RR(fila, 2)
-                .run()
+                .run(true)
                 .displayHistorico();
     }
 }

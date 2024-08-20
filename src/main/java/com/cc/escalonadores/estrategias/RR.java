@@ -25,7 +25,7 @@ public class RR extends Estrategia {
     }
 
     @Override
-    public RR run() {
+    public RR run(boolean cpu) {
         System.out.println("[" + this.nome + " START]\n");
 
         System.out.println("ID | SE | PR");
@@ -37,17 +37,25 @@ public class RR extends Estrategia {
                 processo.setTempoInicio();
             }
 
-            try {
-                int delay = (processo.getTempoRestante() < this.quantum) || (this.fila.size() == 0)
-                        ? processo.getTempoRestante()
-                        : this.quantum;
+            int delay = (processo.getTempoRestante() < this.quantum) || (this.fila.size() == 0)
+                    ? processo.getTempoRestante()
+                    : this.quantum;
 
-                processo.setTempoRestante(delay);
+            if (cpu) {
+                long fim = System.currentTimeMillis() + (delay * 1000);
 
-                Thread.sleep(delay * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                while (System.currentTimeMillis() < fim) {
+                    Math.sqrt(Math.random());
+                }
+            } else {
+                try {
+                    Thread.sleep(delay * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+
+            processo.setTempoRestante(delay);
 
             this.mapa.add(processo.getId());
 

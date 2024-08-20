@@ -25,10 +25,10 @@ public class PS extends Estrategia {
         this.fila = this.fila.reversed();
     }
 
-    public PS run() {
+    public PS run(boolean cpu) {
         this.sort();
 
-        super.run();
+        super.run(cpu);
 
         return this;
     }
