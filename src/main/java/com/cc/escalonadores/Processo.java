@@ -37,7 +37,7 @@ public class Processo {
     private int id, tempo, tempoRestante;
     private Prioridade prioridade;
     private Instant tempoChegada, tempoInicio, tempoTermino;
-    private Duration tempoExecucao, turnaround;
+    private Duration tempoEspera, tempoExecucao, turnaround;
 
     public Processo(int id, int tempo, Prioridade prioridade) {
         this.id = id;
@@ -82,6 +82,10 @@ public class Processo {
         return turnaround;
     }
 
+    public Duration getTempoEspera() {
+        return tempoEspera;
+    }
+
     public void setTempo(int tempo) {
         this.tempo = tempo;
     }
@@ -105,6 +109,7 @@ public class Processo {
     public void setTempoTermino() {
         this.tempoTermino = Instant.now();
 
+        this.setTempoEspera();
         this.setTempoExecucao();
         this.setTurnaround();
     }
@@ -115,6 +120,10 @@ public class Processo {
 
     private void setTurnaround() {
         this.turnaround = Duration.between(this.tempoChegada, this.tempoTermino);
+    }
+
+    private void setTempoEspera() {
+        this.tempoEspera = Duration.between(this.tempoChegada, this.tempoInicio);
     }
 
     @Override
