@@ -4,8 +4,10 @@
  */
 package com.cc.escalonadores.estrategias;
 
+import com.cc.escalonadores.ComparadorProcesso;
 import com.cc.escalonadores.Processo;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,12 +26,19 @@ public class RR extends Estrategia {
         this.mapa = new ArrayList<>();
     }
 
+    public void sort() {
+        Collections.sort(this.fila, new ComparadorProcesso(ComparadorProcesso.Tipo.PS));
+
+        this.fila = this.fila.reversed();
+    }
+
     @Override
     public RR run(boolean cpu) {
         System.out.println("[" + this.nome + " START]\n");
 
-        System.out.println("ID | SE | PR");
+        this.sort();
 
+//        System.out.println("ID | SE | PR");
         while (!fila.isEmpty()) {
             Processo processo = this.fila.removeFirst();
 
@@ -42,9 +51,9 @@ public class RR extends Estrategia {
                     : this.quantum;
 
             if (cpu) {
-                long fim = System.currentTimeMillis() + (delay * 1000);
+                long fim = System.currentTimeMillis() + (long) (delay * 1000);
 
-                while (System.currentTimeMillis() < fim) {
+                while (System.currentTimeMillis() <= fim) {
                     Math.sqrt(Math.random());
                 }
             } else {
@@ -59,22 +68,37 @@ public class RR extends Estrategia {
 
             this.mapa.add(processo.getId());
 
-            if (processo.getTempoRestante() == 0) {
+            if (processo.getTempoRestante() <= 0) {
                 processo.setTempoTermino();
                 this.historico.add(processo);
             } else {
                 this.fila.add(processo);
             }
 
-            System.out.printf(
-                    "%02d | %02d | %02d\n",
+//            System.out.printf(
+//                    "%02d | %02d | %02d\n",
+//                    processo.getId(),
+//                    processo.getTempo(),
+//                    processo.getPrioridade().getValue()
+//            );
+        }
+
+        if (this.modelo != null) {
+            for (Processo processo : this.historico) {
+                this.modelo.addRow(new Object[]{
                     processo.getId(),
                     processo.getTempo(),
-                    processo.getPrioridade().getValue()
-            );
+                    processo.getPrioridade().getValue(),
+                    processo.getTempoExecucao().toSeconds(),
+                    processo.getTempoEspera().toSeconds(),
+                    processo.getTurnaround().toSeconds()
+                });
+            }
         }
 
         System.out.println("\n[" + this.nome + " END]");
+
+        System.out.println(this.mapa);
 
         return this;
     }
