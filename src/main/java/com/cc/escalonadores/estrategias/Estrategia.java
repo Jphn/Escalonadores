@@ -7,15 +7,17 @@ package com.cc.escalonadores.estrategias;
 import com.cc.escalonadores.Processo;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author jphn
  */
-public abstract class Estrategia {
+public abstract class Estrategia implements IEstrategia {
 
     protected List<Processo> fila, historico;
     protected String nome;
+    protected DefaultTableModel modelo, modeloMedia;
 
     public Estrategia(List<Processo> fila, String nome) {
         this.fila = new LinkedList(fila);
@@ -23,6 +25,15 @@ public abstract class Estrategia {
 
         this.historico = new LinkedList<>();
         this.nome = nome;
+    }
+
+    public void setModelo(DefaultTableModel modelo, DefaultTableModel modeloMedia) {
+        this.modelo = modelo;
+        this.modeloMedia = modeloMedia;
+    }
+
+    public String getNome() {
+        return nome;
     }
 
     protected void displayFila() {
@@ -38,17 +49,16 @@ public abstract class Estrategia {
     public void displayHistorico() {
         double mediaExecucao = 0, mediaEspera = 0, mediaTurnaround = 0;
 
-        System.out.println("ID | SE ||| TX | TS | TR");
-
+//        System.out.println("ID | SE ||| TX | TS | TR");
         for (Processo p : this.historico) {
-            System.out.printf(
-                    "%02d | %02d ||| %02d | %02d | %02d\n",
-                    p.getId(),
-                    p.getTempo(),
-                    p.getTempoExecucao().getSeconds(),
-                    p.getTempoEspera().getSeconds(),
-                    p.getTurnaround().getSeconds()
-            );
+//            System.out.printf(
+//                    "%02d | %02d ||| %02d | %02d | %02d\n",
+//                    p.getId(),
+//                    p.getTempo(),
+//                    p.getTempoExecucao().getSeconds(),
+//                    p.getTempoEspera().getSeconds(),
+//                    p.getTurnaround().getSeconds()
+//            );
 
             mediaEspera += p.getTempoEspera().getSeconds();
             mediaExecucao += p.getTempoExecucao().getSeconds();
@@ -59,23 +69,31 @@ public abstract class Estrategia {
         mediaEspera /= this.historico.size();
         mediaTurnaround /= this.historico.size();
 
-        System.out.printf(
-                "\n[MÉDIAS %s]\n"
-                + "TEX | TES | TUR\n"
-                + "%.1f | %.1f | %.1f\n\n",
-                this.nome,
+//        System.out.printf(
+//                "\n[MÉDIAS %s]\n"
+//                + "TEX | TES | TUR\n"
+//                + "%.1f | %.1f | %.1f\n\n",
+//                this.nome,
+//                mediaExecucao,
+//                mediaEspera,
+//                mediaTurnaround
+//        );
+        if (this.modeloMedia != null) {
+            this.modeloMedia.addRow(new Object[]{
                 mediaExecucao,
                 mediaEspera,
-                mediaTurnaround
-        );
+                mediaTurnaround,
+                null,
+                null
+            });
+        }
 
     }
 
     public Estrategia run(boolean cpu) {
         System.out.println("[" + this.nome + " START]\n");
 
-        System.out.println("ID | SE | PR");
-
+//        System.out.println("ID | SE | PR");
         while (!fila.isEmpty()) {
             Processo processo = this.fila.removeFirst();
 
@@ -84,7 +102,7 @@ public abstract class Estrategia {
             if (cpu) {
                 long fim = System.currentTimeMillis() + (processo.getTempo() * 1000);
 
-                while (System.currentTimeMillis() < fim) {
+                while (System.currentTimeMillis() <= fim) {
                     Math.sqrt(Math.random());
                 }
             } else {
@@ -100,18 +118,26 @@ public abstract class Estrategia {
 
             this.historico.add(processo);
 
-            System.out.printf(
-                    "%02d | %02d | %02d\n",
+//            System.out.printf(
+//                    "%02d | %02d | %02d\n",
+//                    processo.getId(),
+//                    processo.getTempo(),
+//                    processo.getPrioridade().getValue()
+//            );
+            if (this.modelo != null) {
+                this.modelo.addRow(new Object[]{
                     processo.getId(),
                     processo.getTempo(),
-                    processo.getPrioridade().getValue()
-            );
+                    processo.getPrioridade().getValue(),
+                    processo.getTempoExecucao().toSeconds(),
+                    processo.getTempoEspera().toSeconds(),
+                    processo.getTurnaround().toSeconds()
+                });
+            }
         }
 
-        System.out.println(
-                "\n[" + this.nome + " END]\n");
+        System.out.println("\n[" + this.nome + " END]\n");
 
         return this;
     }
-
 }
