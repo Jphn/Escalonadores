@@ -5,6 +5,9 @@
 package com.cc.escalonadores.estrategias;
 
 import com.cc.escalonadores.Processo;
+import com.sun.management.OperatingSystemMXBean;
+import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -18,13 +21,19 @@ public abstract class Estrategia implements IEstrategia {
     protected List<Processo> fila, historico;
     protected String nome;
     protected DefaultTableModel modelo, modeloMedia;
+    protected final List<Double> usoCpu = new ArrayList<>();
 
     public Estrategia(List<Processo> fila, String nome) {
         this.fila = new LinkedList(fila);
-        this.fila.forEach((p) -> p.setTempoChegada());
 
+//        this.resetTemposDeChegada();
         this.historico = new LinkedList<>();
         this.nome = nome;
+    }
+
+    protected void resetTemposDeChegada() {
+        long chegada = System.currentTimeMillis();
+        this.fila.forEach((p) -> p.setTempoChegada(chegada));
     }
 
     public void setModelo(DefaultTableModel modelo, DefaultTableModel modeloMedia) {
@@ -60,9 +69,9 @@ public abstract class Estrategia implements IEstrategia {
 //                    p.getTurnaround().getSeconds()
 //            );
 
-            mediaEspera += p.getTempoEspera().getSeconds();
-            mediaExecucao += p.getTempoExecucao().getSeconds();
-            mediaTurnaround += p.getTurnaround().getSeconds();
+            mediaEspera += p.getTempoEspera();
+            mediaExecucao += p.getTempoExecucao();
+            mediaTurnaround += p.getTurnaround();
         }
 
         mediaExecucao /= this.historico.size();
@@ -83,7 +92,7 @@ public abstract class Estrategia implements IEstrategia {
                 mediaExecucao,
                 mediaEspera,
                 mediaTurnaround,
-                null,
+                this.usoCpu.stream().mapToDouble(Double::doubleValue).average().orElse(0.0) * 100,
                 null
             });
         }
@@ -93,28 +102,36 @@ public abstract class Estrategia implements IEstrategia {
     public Estrategia run(boolean cpu) {
         System.out.println("[" + this.nome + " START]\n");
 
+        this.resetTemposDeChegada();
+
 //        System.out.println("ID | SE | PR");
         while (!fila.isEmpty()) {
             Processo processo = this.fila.removeFirst();
 
-            processo.setTempoInicio();
+            long tempoInicio = System.currentTimeMillis();
 
-            if (cpu) {
-                long fim = System.currentTimeMillis() + (processo.getTempo() * 1000);
+            processo.setTempoInicio(tempoInicio);
 
-                while (System.currentTimeMillis() <= fim) {
+            processo.setTempoEspera(tempoInicio - processo.getTempoChegada());
+
+            long fim = System.currentTimeMillis() + (processo.getTempo() * 1000);
+
+            while (System.currentTimeMillis() <= fim) {
+                if (cpu) {
                     Math.sqrt(Math.random());
-                }
-            } else {
-                try {
-                    Thread.sleep(processo.getTempo() * 1000);
 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    this.usoCpu.add(ManagementFactory
+                            .getPlatformMXBean(OperatingSystemMXBean.class)
+                            .getCpuLoad()
+                    );
                 }
             }
 
-            processo.setTempoTermino();
+            long tempoFinal = System.currentTimeMillis();
+
+            processo.setTempoTermino(tempoFinal);
+            processo.setTempoExecucao(tempoFinal - tempoInicio);
+            processo.setTurnaround(tempoFinal - processo.getTempoChegada());
 
             this.historico.add(processo);
 
@@ -129,9 +146,9 @@ public abstract class Estrategia implements IEstrategia {
                     processo.getId(),
                     processo.getTempo(),
                     processo.getPrioridade().getValue(),
-                    processo.getTempoExecucao().toSeconds(),
-                    processo.getTempoEspera().toSeconds(),
-                    processo.getTurnaround().toSeconds()
+                    processo.getTempoExecucao(),
+                    processo.getTempoEspera(),
+                    processo.getTurnaround()
                 });
             }
         }
