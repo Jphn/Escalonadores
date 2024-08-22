@@ -4,8 +4,6 @@
  */
 package com.cc.escalonadores;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Random;
 
 /**
@@ -36,8 +34,10 @@ public class Processo {
 
     private int id, tempo, tempoRestante;
     private Prioridade prioridade;
-    private Instant tempoChegada, tempoInicio, tempoTermino;
-    private Duration tempoEspera, tempoExecucao, turnaround;
+//    private Instant tempoChegada, tempoInicio, tempoTermino;
+//    private Duration tempoEspera, tempoExecucao, turnaround;
+    private long tempoChegada, tempoInicio, tempoTermino;
+    private long tempoEspera, tempoExecucao, turnaround;
 
     public Processo(int id, int tempo, Prioridade prioridade) {
         this.id = id;
@@ -62,28 +62,28 @@ public class Processo {
         return prioridade;
     }
 
-    public Instant getTempoChegada() {
+    public long getTempoChegada() {
         return tempoChegada;
     }
 
-    public Duration getTempoExecucao() {
-        return tempoExecucao;
-    }
-
-    public Instant getTempoInicio() {
+    public long getTempoInicio() {
         return tempoInicio;
     }
 
-    public Instant getTempoTermino() {
+    public long getTempoTermino() {
         return tempoTermino;
     }
 
-    public Duration getTurnaround() {
-        return turnaround;
+    public long getTempoEspera() {
+        return tempoEspera;
     }
 
-    public Duration getTempoEspera() {
-        return tempoEspera;
+    public long getTempoExecucao() {
+        return tempoExecucao;
+    }
+
+    public long getTurnaround() {
+        return turnaround;
     }
 
     public void setTempo(int tempo) {
@@ -98,32 +98,28 @@ public class Processo {
         this.prioridade = prioridade;
     }
 
-    public void setTempoChegada() {
-        this.tempoChegada = Instant.now();
+    public void setTempoChegada(long tempoChegada) {
+        this.tempoChegada = tempoChegada;
     }
 
-    public void setTempoInicio() {
-        this.tempoInicio = Instant.now();
+    public void setTempoInicio(long tempoInicio) {
+        this.tempoInicio = tempoInicio;
     }
 
-    public void setTempoTermino() {
-        this.tempoTermino = Instant.now();
-
-        this.setTempoEspera();
-        this.setTempoExecucao();
-        this.setTurnaround();
+    public void setTempoTermino(long tempoTermino) {
+        this.tempoTermino = tempoTermino;
     }
 
-    private void setTempoExecucao() {
-        this.tempoExecucao = Duration.between(this.tempoInicio, this.tempoTermino);
+    public void setTempoEspera(long tempoEspera) {
+        this.tempoEspera = tempoEspera;
     }
 
-    private void setTurnaround() {
-        this.turnaround = Duration.between(this.tempoChegada, this.tempoTermino);
+    public void setTempoExecucao(long tempoExecucao) {
+        this.tempoExecucao = tempoExecucao;
     }
 
-    private void setTempoEspera() {
-        this.tempoEspera = Duration.between(this.tempoChegada, this.tempoInicio);
+    public void setTurnaround(long turnaround) {
+        this.turnaround = turnaround;
     }
 
     @Override

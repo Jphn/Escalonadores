@@ -41,7 +41,6 @@ public class Principal extends javax.swing.JFrame {
         checkPs = new javax.swing.JCheckBox();
         checkRr = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
-        btnPadrao = new javax.swing.JButton();
         btnRodar = new javax.swing.JButton();
         checkCpu = new javax.swing.JCheckBox();
         jPanel5 = new javax.swing.JPanel();
@@ -100,8 +99,6 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        btnPadrao.setText("Padrão");
-
         btnRodar.setText("Rodar");
         btnRodar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -109,7 +106,6 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        checkCpu.setSelected(true);
         checkCpu.setText("Simular CPU");
         checkCpu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -124,25 +120,17 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(btnPadrao)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnRodar))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(checkCpu)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                    .addComponent(checkCpu)
+                    .addComponent(btnRodar))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(checkCpu)
-                .addGap(18, 18, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnPadrao)
-                    .addComponent(btnRodar))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(btnRodar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jLabel2.setText("Processos");
@@ -368,7 +356,6 @@ public class Principal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup btnGroup;
-    private javax.swing.JButton btnPadrao;
     private javax.swing.JButton btnRodar;
     private javax.swing.JCheckBox checkCpu;
     private javax.swing.JCheckBox checkFifo;

@@ -5,8 +5,8 @@
 package com.cc.escalonadores.gui;
 
 import com.cc.escalonadores.estrategias.IEstrategia;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -35,9 +35,12 @@ public class Tabela extends javax.swing.JFrame {
     }
 
     private void start(boolean cpu) {
-        ((ThreadPoolExecutor) Executors
-                .newFixedThreadPool(1))
-                .submit(() -> this.estrategia.run(cpu).displayHistorico());
+        ExecutorService executor = Executors
+                .newFixedThreadPool(1);
+
+        executor.execute(() -> this.estrategia.run(cpu).displayHistorico());
+
+        executor.shutdown();
     }
 
     /**
@@ -63,7 +66,7 @@ public class Tabela extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "TEMPO", "PRIORIDADE", "EXECUÇÃO", "ESPERA", "TURNAROUND"
+                "ID", "TEMPO (s)", "PRIORIDADE", "EXECUÇÃO (ms)", "ESPERA (ms)", "TURNAROUND (ms)"
             }
         ) {
             Class[] types = new Class [] {
@@ -89,7 +92,7 @@ public class Tabela extends javax.swing.JFrame {
 
             },
             new String [] {
-                "EXECUÇÃO", "ESPERA", "TURNAROUND", "CPU", "MEMÓRIA"
+                "EXECUÇÃO (ms)", "ESPERA (ms)", "TURNAROUND (ms)", "CPU", "MEMÓRIA"
             }
         ) {
             Class[] types = new Class [] {
